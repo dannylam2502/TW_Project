@@ -23,9 +23,48 @@
     <None Include="..\..\Config\DefaultGame.ini">
       <Filter>Config</Filter>
     </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Config\HoloLens">
+      <UniqueIdentifier>{4C8DD267-CDE7-336F-8602-F5F485D22BAB}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\HoloLens\HoloLensEngine.ini">
+      <Filter>Config\HoloLens</Filter>
+    </None>
     <Filter Include="Source\SourceCode">
       <UniqueIdentifier>{6F7DCB10-A365-358F-A365-518E71480CE4}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\SourceCode\MyConstValue.cpp">
+      <Filter>Source\SourceCode</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SourceCode\MyConstValue.h">
+      <Filter>Source\SourceCode</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\SourceCode\MyGameInstance.cpp">
+      <Filter>Source\SourceCode</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SourceCode\MyGameInstance.h">
+      <Filter>Source\SourceCode</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\SourceCode\MyPlayer.cpp">
+      <Filter>Source\SourceCode</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SourceCode\MyPlayer.h">
+      <Filter>Source\SourceCode</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\SourceCode\MyPlayerController.cpp">
+      <Filter>Source\SourceCode</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SourceCode\MyPlayerController.h">
+      <Filter>Source\SourceCode</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\SourceCode\MyPlayerStart.cpp">
+      <Filter>Source\SourceCode</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SourceCode\MyPlayerStart.h">
+      <Filter>Source\SourceCode</Filter>
+    </ClInclude>
     <None Include="..\..\Source\SourceCode\SourceCode.Build.cs">
       <Filter>Source\SourceCode</Filter>
     </None>

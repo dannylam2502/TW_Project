@@ -13,5 +13,7 @@ UCLASS()
 class SOURCECODE_API ASourceCodeGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+
+		ASourceCodeGameModeBase();
 	
 };
