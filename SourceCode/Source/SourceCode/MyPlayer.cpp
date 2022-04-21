@@ -11,8 +11,9 @@ AMyPlayer::AMyPlayer()
 	PrimaryActorTick.bCanEverTick = true;
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> mySkeletalMesh(TEXT("/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny"));
-	this->GetMesh()->SkeletalMesh = mySkeletalMesh.Object;
-
+	mMeshComponent = this->GetMesh();
+	mMeshComponent->SkeletalMesh = mySkeletalMesh.Object;
+	mMeshComponent->SetRelativeLocationAndRotation(mPosInitMesh, mRotInitMesh);
 
 }
 

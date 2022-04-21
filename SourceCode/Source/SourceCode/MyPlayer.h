@@ -12,7 +12,10 @@ class SOURCECODE_API AMyPlayer : public ACharacter
 	GENERATED_BODY()
 
 private:
-	USkeletalMesh* mSkeletalMesh;
+	USkeletalMeshComponent *mMeshComponent;
+
+	FVector mPosInitMesh = FVector(0.f, 0.f, -90.f);
+	FRotator mRotInitMesh = FRotator(0.f, -90.f, 0.f);
 
 public:
 	// Sets default values for this character's properties
