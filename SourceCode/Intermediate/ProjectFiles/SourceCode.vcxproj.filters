@@ -47,6 +47,12 @@
     <ClInclude Include="..\..\Source\SourceCode\MyGameInstance.h">
       <Filter>Source\SourceCode</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\SourceCode\MyInputController.cpp">
+      <Filter>Source\SourceCode</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SourceCode\MyInputController.h">
+      <Filter>Source\SourceCode</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\SourceCode\MyPlayer.cpp">
       <Filter>Source\SourceCode</Filter>
     </ClCompile>

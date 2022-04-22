@@ -11,12 +11,6 @@ class SOURCECODE_API AMyPlayer : public ACharacter
 {
 	GENERATED_BODY()
 
-private:
-	USkeletalMeshComponent *mMeshComponent;
-
-	FVector mPosInitMesh = FVector(0.f, 0.f, -90.f);
-	FRotator mRotInitMesh = FRotator(0.f, -90.f, 0.f);
-
 public:
 	// Sets default values for this character's properties
 	AMyPlayer();
@@ -31,5 +25,22 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+private:
+	USkeletalMeshComponent* mMeshComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "SpringArm")
+		class USpringArmComponent* mSpringArm;
+	UPROPERTY(VisibleAnywhere, Category = "CameraFllow")
+		class UCameraComponent* mCamera;
+
+	//MyInputController mInputController;
+
+	void InputKey(UInputComponent* input);
+
+	void MoveForward(float value);
+	void MoveRight(float value);
+	void LookPitch(float value);
+	void LookYaw(float value);
 
 };
