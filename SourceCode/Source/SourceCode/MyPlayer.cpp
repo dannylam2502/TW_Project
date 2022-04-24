@@ -3,6 +3,7 @@
 
 #include "MyPlayer.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "MyInputController.h"
@@ -11,8 +12,12 @@
 // Sets default values
 AMyPlayer::AMyPlayer()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	this->bUseControllerRotationPitch = false;
+	this->bUseControllerRotationRoll = false;
+	this->bUseControllerRotationYaw = false;
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> mySkeletalMesh(TEXT("/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny"));
 	mMeshComponent = this->GetMesh();
@@ -24,12 +29,16 @@ AMyPlayer::AMyPlayer()
 	mSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	mSpringArm->SetupAttachment(RootComponent);
 	mSpringArm->TargetArmLength = 200.f;
+	mSpringArm->bUsePawnControlRotation = true;
 
 	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraFllow"));
 	mCamera->SetupAttachment(mSpringArm, USpringArmComponent::SocketName);
 	FVector posInitCamera = FVector(0.f, 45.f, 50.f);
 	mCamera->SetRelativeLocation(posInitCamera);
+	mCamera->bUsePawnControlRotation = false;
 
+	mPlayerMovement = this->GetCharacterMovement();
+	mPlayerMovement->bOrientRotationToMovement = true;
 }
 
 // Called when the game starts or when spawned
@@ -63,11 +72,29 @@ void AMyPlayer::MoveForward(float value)
 {
 	//mInputController->moveVertical = value;
 
+	if (Controller != NULL && value != 0.f)
+	{
+		mRotatorPlayer = Controller->GetControlRotation();
+		mRotatorYaw = FRotator(0.f, mRotatorPlayer.Yaw, 0.f);
+		mDirection = FRotationMatrix(mRotatorPlayer).GetUnitAxis(EAxis::X);
+		this->AddMovementInput(mDirection, value, true);
+
+	}
+
 }
 
 void AMyPlayer::MoveRight(float value)
 {
 	//mInputController->moveHorizontal = value;
+
+	if (Controller != NULL && value != 0.f)
+	{
+		mRotatorPlayer = Controller->GetControlRotation();
+		mRotatorYaw = FRotator(0.f, mRotatorPlayer.Yaw, 0.f);
+		mDirection = FRotationMatrix(mRotatorPlayer).GetUnitAxis(EAxis::Y);
+		this->AddMovementInput(mDirection, value, true);
+
+	}
 
 }
 
@@ -75,19 +102,29 @@ void AMyPlayer::LookPitch(float value)
 {
 	//mInputController->lookHorizontal = value;
 
+	if (value != 0.f)
+	{
+		this->AddControllerPitchInput(value);
+	}
+
 }
 
 void AMyPlayer::LookYaw(float value)
 {
 	//mInputController->lookVertical = value;
 
+	if (value != 0.f)
+	{
+		this->AddControllerYawInput(value);
+	}
+
 }
 
 void AMyPlayer::InputKey(UInputComponent* input)
 {
-	input->BindAxis("", this, &AMyPlayer::MoveForward);
-	input->BindAxis("", this, &AMyPlayer::MoveRight);
-	input->BindAxis("", this, &AMyPlayer::LookPitch);
-	input->BindAxis("", this, &AMyPlayer::LookYaw);
+	input->BindAxis("MoveForward", this, &AMyPlayer::MoveForward);
+	input->BindAxis("MoveRight", this, &AMyPlayer::MoveRight);
+	input->BindAxis("LookPitch", this, &AMyPlayer::LookPitch);
+	input->BindAxis("LookYaw", this, &AMyPlayer::LookYaw);
 
 }

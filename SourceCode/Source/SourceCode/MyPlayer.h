@@ -34,6 +34,8 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "CameraFllow")
 		class UCameraComponent* mCamera;
 
+	class UCharacterMovementComponent* mPlayerMovement;
+
 	//MyInputController mInputController;
 
 	void InputKey(UInputComponent* input);
@@ -42,5 +44,9 @@ private:
 	void MoveRight(float value);
 	void LookPitch(float value);
 	void LookYaw(float value);
+
+	FVector mDirection;
+	FRotator mRotatorPlayer;
+	FRotator mRotatorYaw;
 
 };
