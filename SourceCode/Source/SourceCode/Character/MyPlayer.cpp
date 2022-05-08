@@ -72,6 +72,8 @@ void AMyPlayer::MoveForward(float value)
 	if (Controller != nullptr && value != 0.f)
 	{
 		AddMovementInput(GetUnitAxis(EAxis::X), value);
+
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.f, FColor::Blue, "Move Forward");
 	}
 
 }
