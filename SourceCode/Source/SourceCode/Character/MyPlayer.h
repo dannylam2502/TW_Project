@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "MyPlayer.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
+
 UCLASS()
 class SOURCECODE_API AMyPlayer : public ACharacter
 {
@@ -23,7 +26,27 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+private: // Variable.
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		class USpringArmComponent* mSpringArm;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+		class UCameraComponent* mCamera;
+
+	float mTurnRateGamepad;
+
+protected: // Functions.
+	void MoveForward(float value);
+	void MoveRight(float value);
+	FVector GetUnitAxis(EAxis::Type eAxis);
+	void TurnAtRate(float rate);
+	void LookUpAtRate(float rate);
+
+
+	virtual void SetupPlayerInputComponent(class UInputComponent* input) override;
+
+public:
+	FORCEINLINE class USpringArmComponent* GetSpringArm() const { return mSpringArm; }
+	FORCEINLINE class UCameraComponent* GetCamera() const { return mCamera; }
 
 };
