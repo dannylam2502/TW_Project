@@ -26,7 +26,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-private: // Variable.
+private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* mSpringArm;
 
@@ -35,18 +35,23 @@ private: // Variable.
 
 	float mTurnRateGamepad;
 
-protected: // Functions.
+protected:
 	void MoveForward(float value);
 	void MoveRight(float value);
 	FVector GetUnitAxis(EAxis::Type eAxis);
 	void TurnAtRate(float rate);
 	void LookUpAtRate(float rate);
 
+	void PressedSprint();
+	void ReleasedSprint();
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* input) override;
 
 public:
 	FORCEINLINE class USpringArmComponent* GetSpringArm() const { return mSpringArm; }
 	FORCEINLINE class UCameraComponent* GetCamera() const { return mCamera; }
+
+	bool canSprint;
+	float maxWalkSpeed;
 
 };
