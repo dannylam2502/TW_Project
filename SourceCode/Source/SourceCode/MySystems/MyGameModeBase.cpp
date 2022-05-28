@@ -2,7 +2,8 @@
 
 
 #include "MyGameModeBase.h"
-#include "SourceCode//Character/MyPlayer.h"
+#include "SourceCode/Character/BaseCharacter.h"
+#include "SourceCode/Character/MyPlayer.h"
 #include "UObject/ConstructorHelpers.h"
 
 AMyGameModeBase::AMyGameModeBase()

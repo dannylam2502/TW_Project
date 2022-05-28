@@ -5,23 +5,29 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/Controller.h"
 #include "Components/InputComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "Kismet/KismetMathLibrary.h"
+#include "SourceCode/MySystems/InputController.h"
 #include "UObject/ConstructorHelpers.h"
 
-// Sets default values
-AMyPlayer::AMyPlayer() :
-	mTurnRateGamepad (50.f),
-	maxWalkSpeed (250.f),
-	canSprint (false),
-	mSpringArm (NULL),
-	mCamera (NULL)
+#include "SourceCode/MyState/BasicState.h"
+#include "SourceCode/MyState/CharacterIdleState.h"
+#include "SourceCode/MyState/CharacterWalkState.h"
+#include "SourceCode/MyState/CharacterRunState.h"
+
+AMyPlayer::AMyPlayer()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
+	InitCharacter();
+	MakeFSM();
+}
+
+void AMyPlayer::InitCharacter()
+{
+	inputController = new InputController();
 
 	// Configure character.
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> skeletalMesh(TEXT("/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny"));
@@ -46,116 +52,87 @@ AMyPlayer::AMyPlayer() :
 	this->GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
 	// Configure Camera.
-	mSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	mSpringArm->SetupAttachment(RootComponent);
-	mSpringArm->TargetArmLength = 400.f;
-	mSpringArm->bUsePawnControlRotation = true;
+	springArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	springArm->SetupAttachment(RootComponent);
+	springArm->TargetArmLength = 400.f;
+	springArm->bUsePawnControlRotation = true;
 
-	mCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	mCamera->SetupAttachment(mSpringArm, USpringArmComponent::SocketName);
-	mCamera->bUsePawnControlRotation = false;
-
+	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	camera->SetupAttachment(springArm, USpringArmComponent::SocketName);
+	camera->bUsePawnControlRotation = false;
 }
 
-// Called when the game starts or when spawned
-void AMyPlayer::BeginPlay()
+void AMyPlayer::MakeFSM()
 {
-	Super::BeginPlay();
-	
+	idleState = new CharacterIdleState(this, StateID::Idle);
+	idleState->LoadData();
+	walkState = new CharacterWalkState(this, StateID::Walk);
+	walkState->LoadData();
+	runState = new CharacterRunState(this, StateID::Run);
+	runState->LoadData();
+
+	currentState = idleState;
 }
 
-// Called every frame
 void AMyPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bPause) return;
+
+	currentState->runStateTime += DeltaTime;
+	currentState->ExcuseState();
+	currentState->CheckNextState();
 }
 
-void AMyPlayer::MoveForward(float value)
-{
-	if (Controller != nullptr && value != 0.f)
-	{
-		AddMovementInput(GetUnitAxis(EAxis::X), value);
-
-		// Test Debug.
-		const FString strShow = value > 0 ? "Move Forward" : "Move Backward";
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.f, FColor::Blue, strShow);
-		//.
-
-	}
-
-}
-
-void AMyPlayer::MoveRight(float value)
-{
-	if (Controller != nullptr && value != 0.f)
-	{
-		AddMovementInput(GetUnitAxis(EAxis::Y), value);
-
-		// Test Debug.
-		const FString strShow = value > 0 ? "Move Right" : "Move Left";
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.f, FColor::Blue, strShow);
-		//.
-
-	}
-
-}
-
-FVector AMyPlayer::GetUnitAxis(EAxis::Type eAxis)
-{
-	const FRotator yawRotation(0.f, Controller->GetControlRotation().Yaw, 0.f);
-	const FVector direction = FRotationMatrix(yawRotation).GetUnitAxis(eAxis);
-
-	this->GetCharacterMovement()->MaxWalkSpeed = UKismetMathLibrary::FInterpTo(this->GetCharacterMovement()->MaxWalkSpeed, maxWalkSpeed, GetWorld()->DeltaTimeSeconds, 5.f);
-
-	return direction;
-}
-
-void AMyPlayer::TurnAtRate(float rate)
-{
-	AddControllerYawInput(rate * mTurnRateGamepad * GetWorld()->GetDeltaSeconds());
-
-}
-
-void AMyPlayer::LookUpAtRate(float rate)
-{
-	AddControllerPitchInput(rate * mTurnRateGamepad * GetWorld()->GetDeltaSeconds());
-
-}
-
-void AMyPlayer::PressedSprint()
-{
-	canSprint = true;
-	maxWalkSpeed = 500.f;
-
-	// Test Debug.
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.f, FColor::Blue, "Use Sprint");
-	//.
-
-}
-
-void AMyPlayer::ReleasedSprint()
-{
-	canSprint = false;
-	maxWalkSpeed = 250.f;
-
-	// Test Debug.
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.f, FColor::Blue, "None Sprint");
-	//.
-
-}
-
-// Called to bind functionality to input
 void AMyPlayer::SetupPlayerInputComponent(UInputComponent* input)
 {
 	Super::SetupPlayerInputComponent(input);
 
-	input->BindAxis("MoveForward", this, &AMyPlayer::MoveForward);
-	input->BindAxis("MoveRight", this, &AMyPlayer::MoveRight);
-	input->BindAxis("TurnAtRate", this, &AMyPlayer::TurnAtRate);
-	input->BindAxis("LookUpAtRate", this, &AMyPlayer::LookUpAtRate);
+	input->BindAxis("OnMoveVertical", this, &AMyPlayer::OnMoveVertical);
+	input->BindAxis("OnMoveHorizontal", this, &AMyPlayer::OnMoveHorizontal);
+	input->BindAxis("OnLookMouseZ", this, &AMyPlayer::OnLookMouseZ);
+	input->BindAxis("OnLookMouseY", this, &AMyPlayer::OnLookMouseY);
 
 	input->BindAction("Sprint", EInputEvent::IE_Pressed, this, &AMyPlayer::PressedSprint);
 	input->BindAction("Sprint", EInputEvent::IE_Released, this, &AMyPlayer::ReleasedSprint);
 
+}
+
+void AMyPlayer::ChangeState(BasicState* state)
+{
+	currentState->ExitState();
+	currentState = state;
+	currentState->runStateTime = 0.f;
+	currentState->EnterState();
+}
+
+void AMyPlayer::OnMoveVertical(float value)
+{
+	inputController->fVertical = value;
+}
+
+void AMyPlayer::OnMoveHorizontal(float value)
+{
+	inputController->fHorizontal = value;
+}
+
+void AMyPlayer::OnLookMouseZ(float rate)
+{
+	inputController->fMouseZ = rate;
+}
+
+void AMyPlayer::OnLookMouseY(float rate)
+{
+	inputController->fMouseY = rate;
+}
+
+void AMyPlayer::PressedSprint()
+{
+	inputController->bSprint = true;
+}
+
+void AMyPlayer::ReleasedSprint()
+{
+	inputController->bSprint = false;
 }

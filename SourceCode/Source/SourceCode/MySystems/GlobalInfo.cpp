@@ -2,6 +2,9 @@
 
 
 #include "GlobalInfo.h"
+#include "SourceCode/Character/BaseCharacter.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AGlobalInfo::AGlobalInfo()
@@ -30,5 +33,15 @@ void AGlobalInfo::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+FVector AGlobalInfo::GetUnitAxis(ABaseCharacter* parent, EAxis::Type eAxis)
+{
+	const FRotator yawRotation(0.f, parent->Controller->GetControlRotation().Yaw, 0.f);
+	const FVector direction = FRotationMatrix(yawRotation).GetUnitAxis(eAxis);
+
+	parent->GetCharacterMovement()->MaxWalkSpeed = UKismetMathLibrary::FInterpTo(parent->GetCharacterMovement()->MaxWalkSpeed, parent->maxWalkSpeed, parent->GetWorld()->DeltaTimeSeconds, 5.f);
+
+	return direction;
 }
 

@@ -20,10 +20,8 @@ private:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "speed")
 		float speed = 0.f;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "canSprint")
-		bool canSprint;
 
-	class AMyPlayer* player;
+	class ABaseCharacter* player;
 
 
 public:

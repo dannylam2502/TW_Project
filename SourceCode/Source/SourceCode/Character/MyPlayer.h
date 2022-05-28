@@ -3,55 +3,35 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "SourceCode/Character/BaseCharacter.h"
 #include "MyPlayer.generated.h"
 
-class USpringArmComponent;
-class UCameraComponent;
-
+/**
+ * 
+ */
 UCLASS()
-class SOURCECODE_API AMyPlayer : public ACharacter
+class SOURCECODE_API AMyPlayer : public ABaseCharacter
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	AMyPlayer();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-		class USpringArmComponent* mSpringArm;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-		class UCameraComponent* mCamera;
-
-	float mTurnRateGamepad;
+	virtual void MakeFSM() override;
+	virtual void InitCharacter() override;
+	virtual void ChangeState(class BasicState* state) override;
 
 protected:
-	void MoveForward(float value);
-	void MoveRight(float value);
-	FVector GetUnitAxis(EAxis::Type eAxis);
-	void TurnAtRate(float rate);
-	void LookUpAtRate(float rate);
-
-	void PressedSprint();
-	void ReleasedSprint();
-
+	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* input) override;
 
-public:
-	FORCEINLINE class USpringArmComponent* GetSpringArm() const { return mSpringArm; }
-	FORCEINLINE class UCameraComponent* GetCamera() const { return mCamera; }
+	void OnMoveVertical(float value) override;
+	void OnMoveHorizontal(float value) override;
+	void OnLookMouseZ(float rate) override;
+	void OnLookMouseY(float rate) override;
 
-	bool canSprint;
-	float maxWalkSpeed;
-
+	void PressedSprint() override;
+	void ReleasedSprint()override;
 };
