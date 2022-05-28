@@ -72,6 +72,16 @@ void AMyPlayer::MakeFSM()
 	runState->LoadData();
 
 	currentState = idleState;
+	currentStateID = currentState->stateID;
+}
+
+void AMyPlayer::ChangeState(BasicState* state)
+{
+	currentState->ExitState();
+	currentState = state;
+	currentState->runStateTime = 0.f;
+	currentStateID = currentState->stateID;
+	currentState->EnterState();
 }
 
 void AMyPlayer::Tick(float DeltaTime)
@@ -85,6 +95,7 @@ void AMyPlayer::Tick(float DeltaTime)
 	currentState->CheckNextState();
 }
 
+#pragma region Input.
 void AMyPlayer::SetupPlayerInputComponent(UInputComponent* input)
 {
 	Super::SetupPlayerInputComponent(input);
@@ -96,15 +107,6 @@ void AMyPlayer::SetupPlayerInputComponent(UInputComponent* input)
 
 	input->BindAction("Sprint", EInputEvent::IE_Pressed, this, &AMyPlayer::PressedSprint);
 	input->BindAction("Sprint", EInputEvent::IE_Released, this, &AMyPlayer::ReleasedSprint);
-
-}
-
-void AMyPlayer::ChangeState(BasicState* state)
-{
-	currentState->ExitState();
-	currentState = state;
-	currentState->runStateTime = 0.f;
-	currentState->EnterState();
 }
 
 void AMyPlayer::OnMoveVertical(float value)
@@ -136,3 +138,4 @@ void AMyPlayer::ReleasedSprint()
 {
 	inputController->bSprint = false;
 }
+#pragma endregion

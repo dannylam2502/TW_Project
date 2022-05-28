@@ -2,15 +2,17 @@
 
 
 #include "BaseCharacter.h"
+#include "SourceCode/MyState/BasicState.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter() :
-	bPause(false),
+	bPause (false),
 	turnRateGamepad (50.f),
 	maxWalkSpeed (250.f),
 	springArm (NULL),
 	camera (NULL),
 	inputController (NULL),
+	currentStateID (StateID::None),
 	currentState(NULL),
 	idleState(NULL),
 	walkState(NULL),

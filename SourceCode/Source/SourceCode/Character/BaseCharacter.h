@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "SourceCode/MyState/BasicState.h"
 #include "BaseCharacter.generated.h"
 
 class USpringArmComponent;
@@ -38,6 +39,7 @@ public:
 	float turnRateGamepad;
 	float maxWalkSpeed;
 
+	StateID currentStateID;
 	class BasicState* currentState;
 	class CharacterIdleState* idleState;
 	class CharacterWalkState* walkState;

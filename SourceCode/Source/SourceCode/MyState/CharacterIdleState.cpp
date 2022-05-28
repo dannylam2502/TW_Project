@@ -5,6 +5,7 @@
 #include "GameFramework/Controller.h"
 #include "SourceCode/Character/BaseCharacter.h"
 #include "SourceCode/MySystems/InputController.h"
+#include "SourceCode/MySystems/GlobalInfo.h"
 
 #include "SourceCode/MyState/BasicState.h"
 #include "SourceCode/MyState/CharacterWalkState.h"
@@ -32,15 +33,8 @@ void CharacterIdleState::EnterState()
 
 void CharacterIdleState::ExcuseState()
 {
-	if (parent->Controller != nullptr && parent->inputController->fMouseZ != 0.f)
-	{
-		parent->AddControllerYawInput(parent->inputController->fMouseZ * parent->turnRateGamepad * parent->GetWorld()->GetDeltaSeconds());
-	}
-
-	if (parent->Controller != nullptr && parent->inputController->fMouseY != 0.f)
-	{
-		parent->AddControllerPitchInput(parent->inputController->fMouseY * parent->turnRateGamepad * parent->GetWorld()->GetDeltaSeconds());
-	}
+	AGlobalInfo::LookRight(parent);
+	AGlobalInfo::LookUp(parent);
 }
 
 void CharacterIdleState::CheckNextState()

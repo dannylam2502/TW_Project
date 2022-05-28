@@ -32,35 +32,10 @@ void CharacterWalkState::EnterState()
 
 void CharacterWalkState::ExcuseState()
 {
-	if (parent->Controller != nullptr && parent->inputController->fVertical != 0.f)
-	{
-		parent->AddMovementInput(AGlobalInfo::GetUnitAxis(parent, EAxis::X), parent->inputController->fVertical);
-
-		// Test Debug.
-		const FString strShow = parent->inputController->fVertical > 0 ? "Move Forward" : "Move Backward";
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.f, FColor::Blue, strShow);
-		//.
-	}
-	
-	if (parent->Controller != nullptr && parent->inputController->fHorizontal != 0.f)
-	{
-		parent->AddMovementInput(AGlobalInfo::GetUnitAxis(parent, EAxis::Y), parent->inputController->fHorizontal);
-
-		// Test Debug.
-		const FString strShow = parent->inputController->fHorizontal > 0 ? "Move Right" : "Move Left";
-		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.f, FColor::Blue, strShow);
-		//.
-	}
-
-	if (parent->Controller != nullptr && parent->inputController->fMouseZ != 0.f)
-	{
-		parent->AddControllerYawInput(parent->inputController->fMouseZ * parent->turnRateGamepad * parent->GetWorld()->GetDeltaSeconds());
-	}
-
-	if (parent->Controller != nullptr && parent->inputController->fMouseY != 0.f)
-	{
-		parent->AddControllerPitchInput(parent->inputController->fMouseY * parent->turnRateGamepad * parent->GetWorld()->GetDeltaSeconds());
-	}
+	AGlobalInfo::MoveForward(parent);
+	AGlobalInfo::MoveRight(parent);
+	AGlobalInfo::LookRight(parent);
+	AGlobalInfo::LookUp(parent);
 }
 
 void CharacterWalkState::CheckNextState()

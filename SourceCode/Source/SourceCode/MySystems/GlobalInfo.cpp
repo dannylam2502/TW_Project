@@ -5,6 +5,7 @@
 #include "SourceCode/Character/BaseCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "SourceCode/MySystems/InputController.h"
 
 // Sets default values
 AGlobalInfo::AGlobalInfo()
@@ -44,4 +45,47 @@ FVector AGlobalInfo::GetUnitAxis(ABaseCharacter* parent, EAxis::Type eAxis)
 
 	return direction;
 }
+
+void AGlobalInfo::MoveForward(ABaseCharacter* parent)
+{
+	if (parent->Controller != nullptr && parent->inputController->fVertical != 0.f)
+	{
+		parent->AddMovementInput(GetUnitAxis(parent, EAxis::X), parent->inputController->fVertical);
+
+		// Test Debug.
+		const FString strShow = parent->inputController->fVertical > 0 ? "Move Forward" : "Move Backward";
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.f, FColor::Blue, strShow);
+		//.
+	}
+}
+
+void AGlobalInfo::MoveRight(ABaseCharacter* parent)
+{
+	if (parent->Controller != nullptr && parent->inputController->fHorizontal != 0.f)
+	{
+		parent->AddMovementInput(GetUnitAxis(parent, EAxis::Y), parent->inputController->fHorizontal);
+
+		// Test Debug.
+		const FString strShow = parent->inputController->fHorizontal > 0 ? "Move Right" : "Move Left";
+		GEngine->AddOnScreenDebugMessage(INDEX_NONE, 0.f, FColor::Blue, strShow);
+		//.
+	}
+}
+
+void AGlobalInfo::LookUp(ABaseCharacter* parent)
+{
+	if (parent->Controller != nullptr && parent->inputController->fMouseY != 0.f)
+	{
+		parent->AddControllerPitchInput(parent->inputController->fMouseY * parent->turnRateGamepad * parent->GetWorld()->GetDeltaSeconds());
+	}
+}
+
+void AGlobalInfo::LookRight(ABaseCharacter* parent)
+{
+	if (parent->Controller != nullptr && parent->inputController->fMouseZ != 0.f)
+	{
+		parent->AddControllerYawInput(parent->inputController->fMouseZ * parent->turnRateGamepad * parent->GetWorld()->GetDeltaSeconds());
+	}
+}
+
 

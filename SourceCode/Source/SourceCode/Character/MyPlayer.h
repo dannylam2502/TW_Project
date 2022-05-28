@@ -17,11 +17,11 @@ class SOURCECODE_API AMyPlayer : public ABaseCharacter
 public:
 	AMyPlayer();
 
-	virtual void Tick(float DeltaTime) override;
-
-	virtual void MakeFSM() override;
 	virtual void InitCharacter() override;
+	virtual void MakeFSM() override;
 	virtual void ChangeState(class BasicState* state) override;
+
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 	// Called to bind functionality to input

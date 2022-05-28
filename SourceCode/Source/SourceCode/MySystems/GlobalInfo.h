@@ -28,4 +28,9 @@ public:
 
 	static FVector GetUnitAxis(class ABaseCharacter* parent, EAxis::Type eAxis);
 
+	static void MoveForward(class ABaseCharacter* parent);
+	static void MoveRight(class ABaseCharacter* parent);
+	static void LookUp(class ABaseCharacter* parent);
+	static void LookRight(class ABaseCharacter* parent);
+
 };
