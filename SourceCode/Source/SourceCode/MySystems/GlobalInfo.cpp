@@ -87,5 +87,3 @@ void AGlobalInfo::LookRight(ABaseCharacter* parent)
 		parent->AddControllerYawInput(parent->inputController->fMouseZ * parent->turnRateGamepad * parent->GetWorld()->GetDeltaSeconds());
 	}
 }
-
-

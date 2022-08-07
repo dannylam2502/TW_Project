@@ -15,6 +15,7 @@
 #include "SourceCode/MyState/CharacterIdleState.h"
 #include "SourceCode/MyState/CharacterWalkState.h"
 #include "SourceCode/MyState/CharacterRunState.h"
+//#include "Components/StaticMeshComponent.h"
 
 AMyPlayer::AMyPlayer()
 {
@@ -30,15 +31,23 @@ void AMyPlayer::InitCharacter()
 	inputController = new InputController();
 
 	// Configure character.
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> skeletalMesh(TEXT("/Game/Characters/Mannequins/Meshes/SKM_Manny.SKM_Manny"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> skeletalMesh(TEXT("/Game/Art/Mixamo/Paladin/Paladin_J_Nordstrom.Paladin_J_Nordstrom"));
 	this->GetMesh()->SkeletalMesh = skeletalMesh.Object;
 	FVector localMesh(0.f, 0.f, -98.f);
 	FRotator rotaMesh(0.f, -90.f, 0.f);
 	this->GetMesh()->SetRelativeLocationAndRotation(localMesh, rotaMesh);
 
-	static ConstructorHelpers::FObjectFinder<UAnimBlueprint> animControllerBP(TEXT("/Game/AnimationAsset/Player/PlayerAnimController.PlayerAnimController"));
+	static ConstructorHelpers::FObjectFinder<UAnimBlueprint> animControllerBP(TEXT("/Game/Art/Mixamo/Paladin/ControllerAnim/PaladinAnimController.PaladinAnimController"));
 	this->GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	this->GetMesh()->SetAnimInstanceClass(animControllerBP.Object->GetAnimBlueprintGeneratedClass());
+
+	//meshChar = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Char Main"));
+	//static ConstructorHelpers::FObjectFinder<UStaticMesh> meshCharMain(TEXT("/Game/Art/Model/SM_MainChar_01_polySurface35.SM_MainChar_01_polySurface35"));
+	//FVector localMesh(0.f, 0.f, -98.f);
+	//FRotator rotaMesh(0.f, -90.f, 0.f);
+	//meshChar->SetStaticMesh(meshCharMain.Object);
+	//meshChar->SetRelativeLocationAndRotation(localMesh, rotaMesh);
+	//meshChar->SetupAttachment(RootComponent);
 
 	this->GetCapsuleComponent()->InitCapsuleSize(42.f, 96.f);
 	bUseControllerRotationPitch = false;

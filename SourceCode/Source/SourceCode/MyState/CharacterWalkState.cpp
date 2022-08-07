@@ -27,7 +27,7 @@ void CharacterWalkState::LoadData()
 
 void CharacterWalkState::EnterState()
 {
-	parent->maxWalkSpeed = 250.f;
+	parent->maxWalkSpeed = 150.f;
 }
 
 void CharacterWalkState::ExcuseState()

@@ -20,6 +20,8 @@ private:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "speed")
 		float speed = 0.f;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "direction")
+		float direction = 0.f;
 
 	class ABaseCharacter* player;
 

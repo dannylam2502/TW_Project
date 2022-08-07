@@ -23,6 +23,9 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	/*UPROPERTY(VisibleAnywhere)
+	class UStaticMeshComponent* meshChar;*/
+
 protected:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* input) override;
